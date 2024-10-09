@@ -6,7 +6,7 @@ function im_out = GBsimple(im_in)
     im_in = double(im_in);
     patch_size = 8;
     windows_size = 20;
-    number_nlblocks = 100;
+    number_nlblocks = 64;
     
     [im_patches, im_blockes] = findnlblock(im_in, patch_size, ...
         windows_size, number_nlblocks);
