@@ -1,28 +1,9 @@
 # PPGR-GSR
 
-\subsection{Complexity analysis}
-Let $n_g$ denote the number of groups (reference patches). For each group, we have
-$\mathbf{Y}_i \in \mathbb{R}^{b \times m}$, where $b$ is the patch dimension and $m$ is the number of matched similar patches.
-
-\textbf{Block matching.}
-Searching $m$ similar patches within a $M \times M$ search window has a complexity of
-$O(n_g \, M^2 \, b)$, where $M^2$ is the number of candidates and $b$ is the cost of computing patch distances.
-
-\textbf{Graph construction.}
-Constructing the patch graph over $m$ patches costs $O(m^2 b)$ if fully connected (pairwise distances in $\mathbb{R}^b$).
-Constructing the pixel-position graph over $b$ intra-patch locations costs $O(b^2 m)$ if fully connected (pairwise distances in $\mathbb{R}^m$).
-If $k$-NN graphs are used, these costs reduce to $O(m k_g b)$ and $O(b k_p m)$, respectively.
-
-\textbf{Dictionary update.}
-Computing the truncated SVD of $\mathbf{Y}_i \in \mathbb{R}^{b \times m}$ to form $\mathbf{H}_i=\mathbf{U}_i(:,1\!:\!r)$ has a complexity
-$O\!\big(b m \min(b,m)\big)$ per group (or $O(b m^2)$ when $b \ge m$).
-
-\textbf{Sparse coding (ADMM).}
-The dominant step in each ADMM iteration is updating $\mathbf{S}_i \in \mathbb{R}^{r \times m}$ by solving the linear system in \eqref{eq14}--\eqref{eq15}.
-The coefficient matrix $\mathbf{K} \in \mathbb{R}^{(rm)\times(rm)}$ is fixed for a given group (with fixed $\mu$, $\mathbf{L}$, and $\mathbf{L}_{\mathrm{pix}}$),
-thus its Cholesky factorization is computed once with cost $O((rm)^3)$, and each subsequent iteration requires two triangular solves with cost $O((rm)^2)$.
-The $\mathbf{Z}_i$ and dual updates are elementwise and cost $O(rm)$ per iteration.
-Therefore, the per-group ADMM complexity is $O\big((rm)^3 + T (rm)^2\big)$ (dominant terms).
-
-Overall, the total complexity over all groups is the sum of the above costs multiplied by $n_g$.
+\subsection{Complexity analysis} 
+Let $n_g$ denote the number of groups (reference patches). For each group, we have $\mathbf{Y}_i \in \mathbb{R}^{b \times m}$, where $b$ is the patch dimension and $m$ is the number of matched similar patches. 
+\textbf{Block matching.} Searching $m$ similar patches within a $M \times M$ search window has a complexity of $O(n_g \, M^2 \, b)$, where $M^2$ is the number of candidates and $b$ is the cost of computing patch distances. 
+\textbf{Graph construction.} Constructing the patch graph over $m$ patches costs $O(m^2 b)$ if fully connected (pairwise distances in $\mathbb{R}^b$). Constructing the pixel-position graph over $b$ intra-patch locations costs $O(b^2 m)$ if fully connected (pairwise distances in $\mathbb{R}^m$). Using kNN sparsification reduces the number of edges to (O(mk_g)) and (O(bk_p)); however, under brute-force neighbor search the distance computation remains (O(m^2b)) and (O(b^2m)) (or lower with approximate nearest neighbor search)
+\textbf{Dictionary update.} Computing the truncated SVD of $\mathbf{Y}_i \in \mathbb{R}^{b \times m}$ to form $\mathbf{H}_i=\mathbf{U}_i(:,1\!:\!r)$ has a complexity $O\!\big(b m \min(b,m)\big)$ per group (or $O(b m^2)$ when $b \ge m$). 
+\textbf{Sparse coding (ADMM).} The dominant cost in each ADMM iteration is updating (\mathbf{S}_i\in\mathbb{R}^{r\times m}) by solving the Sylvester equation in (13). Instead of explicitly forming the ((rm)\times(rm)) Kronecker system, we exploit the Sylvester structure. Since (\mathbf{B}=\alpha\mathbf{L}) is symmetric positive semidefinite, we eigendecompose (\mathbf{B}=\mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^\top) once per group with cost (O(m^3)), which reduces the update to solving (m) linear systems of size (r), costing (O(r^3+m r^2)) (with a Cholesky factorization of (\mathbf{A})). Therefore, the per-group ADMM complexity is (O(m^3+r^3+T\cdot m r^2)), while the (\mathbf{Z}) and dual updates cost (O(T\cdot rm)). Overall, the total complexity over all groups is the sum of the above costs multiplied by $n_g$.
 
