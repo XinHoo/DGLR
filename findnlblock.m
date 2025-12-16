@@ -1,10 +1,5 @@
 function [im_patches, nlblocks_index] = findnlblock(im_in, patch_size,... 
-windows_size, number_nlblocks)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Solve non-local blocks of input image.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+windows_size, number_nlblocks)   % Solve non-local blocks of input image.
 
 %% Convert *im_in* into overlapped *patches*.
 fprintf("Begin: [Convert image to patches] \n");
