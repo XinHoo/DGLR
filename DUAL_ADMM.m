@@ -56,7 +56,7 @@ B=beta*Lc;
 C=D'*Y+rho*(Z-U);
 %ADMM
 for i = 1:iternum 
-    %求 Sylvester 方程 AX + XB = C 的 X 解 
+    % Sylvester AX + XB = C
     %X = sylvester(full(D'*D+rho*eye(size(D'*D))+alpha*Lr),full(beta*Lc),full(D'*Y+rho*(Z-U)));
     X = sylvester(full(A),full(B),full(C));
     Z = SpProj(X+U,T);
@@ -73,3 +73,4 @@ for j=1:size(Z,2)
     Z(ind(1:T),j) = XU(ind(1:T),j);
 end
 end
+
