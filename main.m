@@ -9,7 +9,7 @@ for i = 1 : length(files)
     cim = imread([img_path, files(i).name]);
     
     nim = imnoise(cim, 'gaussian', 0, 15^2/255^2); % Add Nois
-    dnim = uint8(GBsimple(nim)); % Group-Based Method
+    dnim = uint8(GBsimple(nim)); % Group-Based dual graph
     save([files(i).name, '_15.mat'], 'cim', 'nim', 'dnim');
     
     fprintf(psnr_file, files(i).name);
